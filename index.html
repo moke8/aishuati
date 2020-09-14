@@ -1,3 +1,10 @@
+<!--
+ * @Author: mokevip
+ * @Date: 2020-09-14 09:24:16
+ * @LastEditors: mokevip
+ * @LastEditTime: 2020-09-14 10:54:47
+ * @Description: 
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,28 +20,28 @@
     <script>
         var _hmt = _hmt || [];
         (function() {
-          var hm = document.createElement("script");
-          hm.src = "https://hm.baidu.com/hm.js?b3a7eb27703def9ba98376aca09290db";
-          var s = document.getElementsByTagName("script")[0]; 
-          s.parentNode.insertBefore(hm, s);
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?b3a7eb27703def9ba98376aca09290db";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
         })();
-        </script>
-        
+    </script>
+
     <style>
         .title {
             text-align: center;
             margin-top: 2vw;
         }
-
+        
         .timuList {
             width: 96vw;
             margin: 2vw auto 0;
         }
-
+        
         .timu {
             margin-top: 2vw;
         }
-
+        
         .author {
             text-align: right;
             padding-right: 3.2vw;
@@ -67,10 +74,10 @@
                 jsonList: JSONList
             },
             methods: {
-                goNext: function (id, file) {
+                goNext: function(id, file) {
                     sessionStorage.id = id;
                     sessionStorage.file = file;
-                    window.location.href = "./timu.html"
+                    window.location.href = "./type.html"
                 }
             }
         })

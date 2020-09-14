@@ -1,3 +1,10 @@
+<!--
+ * @Author: mokevip
+ * @Date: 2020-09-14 09:24:16
+ * @LastEditors: mokevip
+ * @LastEditTime: 2020-09-14 10:54:29
+ * @Description: 
+-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,27 +15,66 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Cache-control" content="no-cache,must-revalidate">
     <meta http-equiv="Cache" content="no-cache">
-    <title>选择答题类型</title>
+    <title>答题类型选择</title>
+    <link rel="stylesheet" href="./css/iview.css">
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?b3a7eb27703def9ba98376aca09290db";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <style>
+        .typeList {
+            width: 95vw;
+            margin: 2vw auto;
+        }
+        
+        .typeList>div {
+            margin-top: 2vw;
+        }
+    </style>
+
 </head>
 
 <body>
     <div id="el">
-            <div>刷题模式</div>
-            <div>错题模式</div>
-            <div>背题模式</div>
+        <p style="margin-left:3vw;margin-top: 3vw;font-size: 0.9rem;">请选择答题模式：</p>
+        <div class="typeList">
+            <div v-for="i in typeList" @click='goNext(i.id)'>
+                <Card class="timu">
+                    {{i.name}}
+                </Card>
+            </div>
+        </div>
     </div>
-    <script src="./js/public.js"></script>
+    <script src="./js/public.js?version=1.0"></script>
     <script src="./js/vue.min.js"></script>
-
+    <script src="./js/iview.min.js"></script>
     <script>
-        const vue=new Vue({
+        const vue = new Vue({
             el: "#el",
-            data:{
-                jsonList:JSONList
+            data: {
+                typeList: [{
+                    id: 'random',
+                    name: "乱序答题"
+                }, {
+                    id: 'order',
+                    name: "顺序答题"
+                }, {
+                    id: 'recite',
+                    name: "背题模式"
+                }, {
+                    id: 'wrong',
+                    name: "错题模式"
+                }]
             },
             methods: {
-                goNext(id){
-                    sessionStorage.id=id;
+                goNext(id) {
+                    sessionStorage.type = id;
+                    window.location.href = "./timu.html"
                 }
             }
         })

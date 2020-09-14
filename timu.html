@@ -116,6 +116,10 @@
             white-space: inherit;
             line-height: 24px;
         }
+        
+        .ivu-message-notice-content-text {
+            display: block!important;
+        }
     </style>
 </head>
 
@@ -196,6 +200,16 @@
                         setTimeout(() => {
                             this.next()
                         }, 800)
+                    } else {
+                        //错题ID记录
+                        if (!localStorage["wrong_" + sessionStorage.id]) {
+                            localStorage["wrong_" + sessionStorage.id] = JSON.stringify([])
+                        }
+                        let wrong = JSON.parse(localStorage["wrong_" + sessionStorage.id])
+                        if (wrong.indexOf(this.timu.id) == -1) {
+                            wrong.push(this.timu.id)
+                            localStorage["wrong_" + sessionStorage.id] = JSON.stringify(wrong)
+                        }
                     }
                     this.answer = true;
                 },
@@ -211,15 +225,48 @@
                         this.initTimu()
                     }
                 },
-                initTimu() {
-                    this.daan = []
-                    this.answer = false
-                    this.timu = this.data[this.page]
-                    console.log(this.timu.option)
+                initTimu() { //题目控制
+                    //对之前的记录清空
+                    this.daan = [];
+                    this.answer = false;
+                    //新题目
+                    this.timu = this.data[this.page];
+                    //简答题直接显示解析和答案
                     if (this.timu.option.length == 0) {
                         this.answer = true;
                         this.result = 2;
                     }
+                    //背题模式直接显示解析和答案
+                    if (sessionStorage.type == "recite") {
+                        this.answer = true;
+                        this.result = 3; //不显示结果框
+                    }
+                },
+                //打乱数组顺序
+                randomArray(array) {
+                    var m = array.length,
+                        t, i;
+                    while (m) {
+                        i = Math.floor(Math.random() * m--);
+                        t = array[m];
+                        array[m] = array[i];
+                        array[i] = t;
+                    }
+                    return array;
+                },
+                //将现有数组中的错题提取出来
+                wrongArray(array) {
+                    let wrong = JSON.parse(localStorage["wrong_" + sessionStorage.id])
+                    let result = [];
+                    for (let i in wrong) {
+                        for (let j in array) {
+                            if (wrong[i] === array[j].id) {
+                                result.push(array[j]);
+                            }
+                        }
+                    }
+                    //错题乱序返回
+                    return this.randomArray(result);
                 }
             },
             created() {
@@ -229,21 +276,26 @@
                 axios.get('./json/' + sessionStorage.file)
                     .then((response) => {
                         this.data = response.data;
-                        //打乱顺序
-                        {
-                            var m = this.data.length,
-                                t, i;
-                            while (m) {
-                                i = Math.floor(Math.random() * m--);
-                                t = this.data[m];
-                                this.data[m] = this.data[i];
-                                this.data[i] = t;
+                        //错题模式需要筛选题目
+                        if (sessionStorage.type == "wrong") {
+                            //如果没有错题
+                            if (localStorage["wrong_" + sessionStorage.id]) {
+                                this.data = this.wrongArray(this.data)
+                            } else { //如果没有错题
+                                this.$Message.error('您暂时无错题记录，已自动为您选择乱序答题模式');
+                                sessionStorage.type = "random";
                             }
                         }
+                        //乱序模式需要随机排序题目
+                        if (sessionStorage.type == "random") {
+                            this.data = this.randomArray(this.data)
+                        }
+
+                        //初始化题目
                         this.initTimu();
                     })
                     .catch(function(error) {
-                        alert("发生错误！")
+                        this.$Message.error('发生错误！');
                     });
             }
         })
