@@ -2,12 +2,17 @@
  * @Author: mokevip
  * @Date: 2020-09-14 13:54:03
  * @LastEditors: mokevip
- * @LastEditTime: 2020-09-14 14:15:47
+ * @LastEditTime: 2020-09-14 14:26:26
  * @Description: 
 -->
 <h1>爱刷题</h1>
 <p>一个简单的无数据库的刷题H5应用</p>
-<p>特色内容：</p>
+<h3>前言</h3>
+<p>迫于最近需要考试，平时碎片化时间较多，并不能合理利用碎片化时间。便想着可以用类似于<code>驾考宝典</code>的应用帮助自己充分利用碎片化时间。</p>
+<p>于是将试卷WORD整理出来，导入了一些刷题网站（如<code>刷刷题</code>、<code>考试宝</code>等），发现，都是需要收费的，可能一周就要10元。</p>
+<p>逐到GITHUB搜索，可能因为姿势不正确，并没有找到合适的仓库。</p>
+<p>被逼无奈，只好自己上手。做好了之后也可以分享给大家，共同学习共同努力。</p>
+<h3>特色内容</h3>
 <ol>
     <li>无后端、无数据库轻量化部署简单</li>
     <li>使用JSON作为题库存储，层次清晰，结构简单易懂</li>
@@ -15,7 +20,7 @@
     <li>四种刷题模式：顺序刷题、乱序刷题、错题模式、背题模式</li>
 </ol>
 
-<p>主要结构：</p>
+<h3>主要结构</h3>
 <ul>
     <li>index.html      主页，显示题库列表</li>
     <li>type.html       刷题模式选择页面，可选四种模式</li>
@@ -25,6 +30,7 @@
     <li>py-timuToJson    转换JSON的模板和脚本</li>
 </ul>
 
+<h3>效果预览</h3>
 <p>目前自用演示站：<a href="http://shuati.mokevip.top/">http://shuati.mokevip.top/</a></p>
 <p>效果图：</p>
 <img src="https://s1.ax1x.com/2020/09/14/wD3NTA.png" alt="wD3NTA.png" border="0" />
