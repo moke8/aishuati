@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache,must-revalidate">
+    <meta http-equiv="Cache" content="no-cache">
+    <title>爱刷题</title>
+    <link rel="stylesheet" href="./css/iview.css">
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+          var hm = document.createElement("script");
+          hm.src = "https://hm.baidu.com/hm.js?b3a7eb27703def9ba98376aca09290db";
+          var s = document.getElementsByTagName("script")[0]; 
+          s.parentNode.insertBefore(hm, s);
+        })();
+        </script>        
+    <style>
+        body {
+            line-height: 1.4rem;
+        }
+
+        .process {
+            width: 93.6vw;
+            display: block;
+            margin: 2vw auto 1vw;
+            font-size: 0.8rem;
+            letter-spacing: 0.1rem;
+        }
+
+        .timu {
+            width: 96vw;
+            margin: 2vw auto;
+        }
+
+        .option {
+            margin: 0 0 2vw;
+            line-height: 2rem;
+            letter-spacing: 0.1rem;
+        }
+
+        .option div {
+            padding: 0 2vw;
+            border-radius: 0.6vw;
+        }
+
+
+        .option .active {
+            background-color: blanchedalmond;
+
+        }
+
+        .type {
+            font-size: 0.6rem;
+            color: white;
+            border-radius: 15px;
+            padding: 0px 5px;
+            letter-spacing: 0.1rem;
+            text-indent: 0.2rem;
+            background-color: #1890ff;
+            display: inline-block;
+            margin-right: 6px;
+            line-height: 20px;
+        }
+
+        .huida {
+            width: 96vw;
+            display: block;
+            margin: 4vw auto;
+        }
+
+        .result {
+            margin: 2vw 0 3vw;
+            position: relative;
+            padding: 8px 48px 8px 16px;
+            border-radius: 4px;
+            color: #515a6e;
+            font-size: 12px;
+            line-height: 16px;
+            margin-bottom: 10px;
+        }
+
+        .result.success {
+            border: 1px solid #8ce6b0;
+            background-color: #edfff3;
+        }
+
+        .result.warning {
+            border: 1px solid #ffd77a;
+            background-color: #fff9e6;
+        }
+
+        .result.info {
+            border: 1px solid #abdcff;
+            background-color: #f0faff;
+        }
+        .answer{
+            white-space: pre-line;
+        }
+        .analysis {
+            margin-top: 1vw;
+        }
+
+        .pageControl {
+            text-align: center;
+            display: block;
+            margin-top: 20px;
+        }
+
+        .ivu-card-head p {
+            overflow: inherit;
+            white-space: inherit;
+            line-height: 24px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="el">
+        <p class='process'>第{{page+1}}题，共{{data.length}}题</p>
+        <Card class='timu'>
+            <p slot="title">
+                <label class='type'>{{String(timu.answer).length>1?'多选':'单选'}}</label>{{timu.title}}
+            </p>
+            <!-- <a href="#" slot="extra" @click.prevent="changeLimit">
+                <Icon type="ios-loop-strong"></Icon>
+                Change
+            </a> -->
+            <div class="option">
+                <div v-for="(i,k) in timu.option" v-key='k' @click='select(k)' :class='daan.indexOf(k)!=-1?"active":""'>
+                    {{zidian[k]}}.{{i}}</div>
+            </div>
+            <div type="success" v-if='answer&&result===1' class='result success'>恭喜回答正确</div>
+            <div type="warning" v-if='answer&&result===0' class='result warning'>抱歉回答错误了哦！</div>
+            <div v-if='answer&&result===2' class='result info'>简答题暂不支持回答</div>
+            <div v-if='answer' class="answer">答案：{{timu.answer}}</div>
+            <div v-if='answer' class="analysis">解析：{{timu.analysis?timu.analysis:'该答案暂无解析'}}</div>
+        </Card>
+        <i-button class="huida" type="primary" :disabled='daan.length===0' @click='huida' size="large" long>确定答案
+        </i-button>
+        <ButtonGroup class="pageControl">
+            <i-button type="primary" @click="prev">
+                上一题
+            </i-button>
+            <i-button type="primary" @click="next">
+                下一题
+            </i-button>
+        </ButtonGroup>
+    </div>
+    <script src="./js/public.js"></script>
+    <script src="./js/vue.min.js"></script>
+    <script src="./js/iview.min.js"></script>
+    <script src="./js/axios.min.js"></script>
+    <script>
+        const vue = new Vue({
+            el: "#el",
+            data: {
+                data: [],
+                page: 0,
+                timu: {},
+                zidian: ['A', 'B', 'C', 'D', 'E'],
+                daan: [],
+                answer: false,
+                result: false
+            },
+            methods: {
+                select(k) {
+                    if (this.daan.indexOf(k) != -1) {
+                        this.daan.splice(this.daan.findIndex(item => item === k), 1);
+                    }
+                    else {
+                        //单选同时只能选一项
+                        if (String(this.timu.answer).length === 1) {
+                            this.daan = [];
+                        }
+                        this.daan.push(k)
+                    }
+                },
+                huida() {
+                    let answer = this.timu.answer.split('')
+                    this.result = 1;
+                    if (this.daan.length != answer.length) {
+                        this.result = 0;
+                    }
+                    else {
+                        for (i in this.daan) {
+                            console.log(this.zidian[this.daan[i]])
+                            if (answer.indexOf(this.zidian[this.daan[i]]) == -1) {
+                                this.result = 0;
+                            }
+                        }
+                    }
+                    if (this.result) {
+                        setTimeout(() => {
+                            this.next()
+                        }, 800)
+                    }
+                    this.answer = true;
+                },
+                next() {
+                    if (this.page < this.data.length) {
+                        this.page += 1;
+                        this.initTimu()
+                    }
+                },
+                prev() {
+                    if (this.page !== 0) {
+                        this.page -= 1;
+                        this.initTimu()
+                    }
+                },
+                initTimu() {
+                    this.daan = []
+                    this.answer = false
+                    this.timu = this.data[this.page]
+                    if (this.timu.option.length == 0) {
+                        this.answer = true;
+                        this.result = 2;
+                    }
+                }
+            },
+            created() {
+                if(!sessionStorage.file){
+                    window.location.href="./index.html"
+                }
+                axios.get('./json/' + sessionStorage.file)
+                    .then((response) => {
+                        this.data = response.data;
+                        //打乱顺序
+                        {
+                            var m = this.data.length,
+                                t, i;
+                            while (m) {
+                                i = Math.floor(Math.random() * m--);
+                                t = this.data[m];
+                                this.data[m] = this.data[i];
+                                this.data[i] = t;
+                            }
+                        }
+                        this.timu = this.data[0]
+                        console.log(this.timu)
+                    })
+                    .catch(function (error) {
+                        alert("发生错误！")
+                    });
+            }
+        })
+    </script>
+</body>
+
+</html>
