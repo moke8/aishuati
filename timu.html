@@ -13,17 +13,17 @@
     <script>
         var _hmt = _hmt || [];
         (function() {
-          var hm = document.createElement("script");
-          hm.src = "https://hm.baidu.com/hm.js?b3a7eb27703def9ba98376aca09290db";
-          var s = document.getElementsByTagName("script")[0]; 
-          s.parentNode.insertBefore(hm, s);
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?b3a7eb27703def9ba98376aca09290db";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
         })();
-        </script>        
+    </script>
     <style>
         body {
             line-height: 1.4rem;
         }
-
+        
         .process {
             width: 93.6vw;
             display: block;
@@ -31,29 +31,27 @@
             font-size: 0.8rem;
             letter-spacing: 0.1rem;
         }
-
+        
         .timu {
             width: 96vw;
             margin: 2vw auto;
         }
-
+        
         .option {
             margin: 0 0 2vw;
             line-height: 2rem;
             letter-spacing: 0.1rem;
         }
-
+        
         .option div {
             padding: 0 2vw;
             border-radius: 0.6vw;
         }
-
-
+        
         .option .active {
             background-color: blanchedalmond;
-
         }
-
+        
         .type {
             font-size: 0.6rem;
             color: white;
@@ -66,13 +64,13 @@
             margin-right: 6px;
             line-height: 20px;
         }
-
+        
         .huida {
             width: 96vw;
             display: block;
             margin: 4vw auto;
         }
-
+        
         .result {
             margin: 2vw 0 3vw;
             position: relative;
@@ -83,34 +81,36 @@
             line-height: 16px;
             margin-bottom: 10px;
         }
-
+        
         .result.success {
             border: 1px solid #8ce6b0;
             background-color: #edfff3;
         }
-
+        
         .result.warning {
             border: 1px solid #ffd77a;
             background-color: #fff9e6;
         }
-
+        
         .result.info {
             border: 1px solid #abdcff;
             background-color: #f0faff;
         }
-        .answer{
+        
+        .answer {
             white-space: pre-line;
         }
+        
         .analysis {
             margin-top: 1vw;
         }
-
+        
         .pageControl {
             text-align: center;
             display: block;
             margin-top: 20px;
         }
-
+        
         .ivu-card-head p {
             overflow: inherit;
             white-space: inherit;
@@ -124,7 +124,7 @@
         <p class='process'>第{{page+1}}题，共{{data.length}}题</p>
         <Card class='timu'>
             <p slot="title">
-                <label class='type'>{{String(timu.answer).length>1?'多选':'单选'}}</label>{{timu.title}}
+                <label class='type'>{{String(timu.answer).length>1?(String(timu.answer).length>5?'简答':'多选'):'单选'}}</label>{{timu.title}}
             </p>
             <!-- <a href="#" slot="extra" @click.prevent="changeLimit">
                 <Icon type="ios-loop-strong"></Icon>
@@ -171,8 +171,7 @@
                 select(k) {
                     if (this.daan.indexOf(k) != -1) {
                         this.daan.splice(this.daan.findIndex(item => item === k), 1);
-                    }
-                    else {
+                    } else {
                         //单选同时只能选一项
                         if (String(this.timu.answer).length === 1) {
                             this.daan = [];
@@ -185,8 +184,7 @@
                     this.result = 1;
                     if (this.daan.length != answer.length) {
                         this.result = 0;
-                    }
-                    else {
+                    } else {
                         for (i in this.daan) {
                             console.log(this.zidian[this.daan[i]])
                             if (answer.indexOf(this.zidian[this.daan[i]]) == -1) {
@@ -217,6 +215,7 @@
                     this.daan = []
                     this.answer = false
                     this.timu = this.data[this.page]
+                    console.log(this.timu.option)
                     if (this.timu.option.length == 0) {
                         this.answer = true;
                         this.result = 2;
@@ -224,8 +223,8 @@
                 }
             },
             created() {
-                if(!sessionStorage.file){
-                    window.location.href="./index.html"
+                if (!sessionStorage.file) {
+                    window.location.href = "./index.html"
                 }
                 axios.get('./json/' + sessionStorage.file)
                     .then((response) => {
@@ -241,10 +240,9 @@
                                 this.data[i] = t;
                             }
                         }
-                        this.timu = this.data[0]
-                        console.log(this.timu)
+                        this.initTimu();
                     })
-                    .catch(function (error) {
+                    .catch(function(error) {
                         alert("发生错误！")
                     });
             }
