@@ -146,6 +146,8 @@
         </Card>
         <i-button class="huida" type="primary" :disabled='daan.length===0' @click='huida' size="large" long>确定答案
         </i-button>
+        <i-button class="huida" type="success" v-if='sessionStorage.type == "wrong"' @click='del' size="large" long>我已学会，不再显示
+        </i-button>
         <ButtonGroup class="pageControl">
             <i-button type="primary" @click="prev">
                 上一题
@@ -155,7 +157,7 @@
             </i-button>
         </ButtonGroup>
     </div>
-    <script src="./js/public.js"></script>
+    <script src="./js/public.js?version=1.0"></script>
     <script src="./js/vue.min.js"></script>
     <script src="./js/iview.min.js"></script>
     <script src="./js/axios.min.js"></script>
@@ -212,6 +214,16 @@
                         }
                     }
                     this.answer = true;
+                },
+                //删除错题
+                del() {
+                    let wrong = JSON.parse(localStorage["wrong_" + sessionStorage.id])
+                    let index = wrong.indexOf(this.timu.id)
+                    console.log(index)
+                    wrong.splice(index, 1)
+                    localStorage["wrong_" + sessionStorage.id] = JSON.stringify(wrong)
+                    this.$Message.success('删除错题记录成功！');
+                    window.location.reload();
                 },
                 next() {
                     if (this.page < this.data.length) {
@@ -279,7 +291,7 @@
                         //错题模式需要筛选题目
                         if (sessionStorage.type == "wrong") {
                             //如果没有错题
-                            if (localStorage["wrong_" + sessionStorage.id]) {
+                            if (localStorage["wrong_" + sessionStorage.id] && localStorage["wrong_" + sessionStorage.id] != "[]") {
                                 this.data = this.wrongArray(this.data)
                             } else { //如果没有错题
                                 this.$Message.error('您暂时无错题记录，已自动为您选择乱序答题模式');
