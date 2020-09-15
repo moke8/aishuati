@@ -30,7 +30,7 @@
     <li>py-timuToJson    转换JSON的模板和脚本</li>
 </ul>
 
-<p><b>注：下载后双击index.html是无法直接食用的，需要配合服务食用</b></p>
+<p><b>注：下载后双击index.html是无法直接食用的，需要配合web服务（如静态资源服务器或live-server等）食用</b></p>
 
 <h3>效果预览</h3>
 <p>目前自用演示站：<a href="http://shuati.mokevip.top/">http://shuati.mokevip.top/</a></p>
