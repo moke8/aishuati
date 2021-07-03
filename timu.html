@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="./css/iview.css">
     <script>
         var _hmt = _hmt || [];
-        (function() {
+        (function () {
             var hm = document.createElement("script");
             hm.src = "https://hm.baidu.com/hm.js?b3a7eb27703def9ba98376aca09290db";
             var s = document.getElementsByTagName("script")[0];
@@ -23,7 +23,7 @@
         body {
             line-height: 1.4rem;
         }
-        
+
         .process {
             width: 93.6vw;
             display: block;
@@ -31,27 +31,27 @@
             font-size: 0.8rem;
             letter-spacing: 0.1rem;
         }
-        
+
         .timu {
             width: 96vw;
             margin: 2vw auto;
         }
-        
+
         .option {
             margin: 0 0 2vw;
             line-height: 2rem;
             letter-spacing: 0.1rem;
         }
-        
+
         .option div {
             padding: 0 2vw;
             border-radius: 0.6vw;
         }
-        
+
         .option .active {
             background-color: blanchedalmond;
         }
-        
+
         .type {
             font-size: 0.6rem;
             color: white;
@@ -64,13 +64,13 @@
             margin-right: 6px;
             line-height: 20px;
         }
-        
+
         .huida {
             width: 96vw;
             display: block;
             margin: 4vw auto;
         }
-        
+
         .result {
             margin: 2vw 0 3vw;
             position: relative;
@@ -81,44 +81,44 @@
             line-height: 16px;
             margin-bottom: 10px;
         }
-        
+
         .result.success {
             border: 1px solid #8ce6b0;
             background-color: #edfff3;
         }
-        
+
         .result.warning {
             border: 1px solid #ffd77a;
             background-color: #fff9e6;
         }
-        
+
         .result.info {
             border: 1px solid #abdcff;
             background-color: #f0faff;
         }
-        
+
         .answer {
             white-space: pre-line;
         }
-        
+
         .analysis {
             margin-top: 1vw;
         }
-        
+
         .pageControl {
             text-align: center;
             display: block;
             margin-top: 20px;
         }
-        
+
         .ivu-card-head p {
             overflow: inherit;
             white-space: inherit;
             line-height: 24px;
         }
-        
+
         .ivu-message-notice-content-text {
-            display: block!important;
+            display: block !important;
         }
     </style>
 </head>
@@ -128,7 +128,8 @@
         <p class='process'>第{{page+1}}题，共{{data.length}}题</p>
         <Card class='timu'>
             <p slot="title">
-                <label class='type'>{{String(timu.answer).length>1?(String(timu.answer).length>5?'简答':'多选'):'单选'}}</label>{{timu.title}}
+                <label
+                    class='type' v-if="timu.option">{{timu.option.length?(timu.answer.length===1?'单选':'多选'):(timu.answer.length>16?'简答':'填空')}}</label>{{timu.title}}
             </p>
             <!-- <a href="#" slot="extra" @click.prevent="changeLimit">
                 <Icon type="ios-loop-strong"></Icon>
@@ -140,13 +141,15 @@
             </div>
             <div type="success" v-if='answer&&result===1' class='result success'>恭喜回答正确</div>
             <div type="warning" v-if='answer&&result===0' class='result warning'>抱歉回答错误了哦！</div>
-            <div v-if='answer&&result===2' class='result info'>简答题暂不支持回答</div>
+            <div v-if='answer&&result===2' class='result info'>{{(String(timu.answer).length>16?'简答':'填空')}}题暂不支持回答
+            </div>
             <div v-if='answer' class="answer">答案：{{timu.answer}}</div>
             <div v-if='answer' class="analysis">解析：{{timu.analysis?timu.analysis:'该答案暂无解析'}}</div>
         </Card>
         <i-button class="huida" type="primary" :disabled='daan.length===0' @click='huida' size="large" long>确定答案
         </i-button>
-        <i-button class="huida" type="success" v-if='sessionStorage.type == "wrong"' @click='del' size="large" long>我已学会，不再显示
+        <i-button class="huida" type="success" v-if='sessionStorage.type == "wrong"' @click='del' size="large" long>
+            我已学会，不再显示
         </i-button>
         <ButtonGroup class="pageControl">
             <i-button type="primary" @click="prev">
@@ -165,6 +168,8 @@
         const vue = new Vue({
             el: "#el",
             data: {
+                fileName: '',
+                fileId: '',
                 data: [],
                 page: 0,
                 timu: {},
@@ -204,24 +209,38 @@
                         }, 800)
                     } else {
                         //错题ID记录
-                        if (!localStorage["wrong_" + sessionStorage.id]) {
-                            localStorage["wrong_" + sessionStorage.id] = JSON.stringify([])
+                        if (!localStorage["wrong_" + this.fileId]) {
+                            localStorage["wrong_" + this.fileId] = JSON.stringify([])
                         }
-                        let wrong = JSON.parse(localStorage["wrong_" + sessionStorage.id])
+                        let wrong = JSON.parse(localStorage["wrong_" + this.fileId])
                         if (wrong.indexOf(this.timu.id) == -1) {
                             wrong.push(this.timu.id)
-                            localStorage["wrong_" + sessionStorage.id] = JSON.stringify(wrong)
+                            localStorage["wrong_" + this.fileId] = JSON.stringify(wrong)
                         }
                     }
                     this.answer = true;
                 },
+                // 恢复答题进度
+                recovery(type) {
+                    if (localStorage[type + '_' + this.fileId] && Number(localStorage[type + '_' + this.fileId])) {
+                        const num = Number(localStorage[type + '_' + this.fileId])
+                        this.$Modal.confirm({
+                            title: '恢复刷题进度',
+                            content: '检测到你上次答到第' + (num + 1) + '题，是否继续？',
+                            onOk: () => {
+                                this.page = num
+                                this.initTimu()
+                            }
+                        })
+                    }
+                },
                 //删除错题
                 del() {
-                    let wrong = JSON.parse(localStorage["wrong_" + sessionStorage.id])
+                    let wrong = JSON.parse(localStorage["wrong_" + this.fileId])
                     let index = wrong.indexOf(this.timu.id)
                     console.log(index)
                     wrong.splice(index, 1)
-                    localStorage["wrong_" + sessionStorage.id] = JSON.stringify(wrong)
+                    localStorage["wrong_" + this.fileId] = JSON.stringify(wrong)
                     this.$Message.success('删除错题记录成功！');
                     window.location.reload();
                 },
@@ -253,6 +272,13 @@
                         this.answer = true;
                         this.result = 3; //不显示结果框
                     }
+                    // 记录答题题号
+                    if (sessionStorage.type === 'order') {
+                        localStorage['order_' + this.fileId] = this.page
+                    }
+                    if (sessionStorage.type === 'recite') {
+                        localStorage['recite_' + this.fileId] = this.page
+                    }
                 },
                 //打乱数组顺序
                 randomArray(array) {
@@ -268,7 +294,7 @@
                 },
                 //将现有数组中的错题提取出来
                 wrongArray(array) {
-                    let wrong = JSON.parse(localStorage["wrong_" + sessionStorage.id])
+                    let wrong = JSON.parse(localStorage["wrong_" + this.fileId])
                     let result = [];
                     for (let i in wrong) {
                         for (let j in array) {
@@ -282,16 +308,18 @@
                 }
             },
             created() {
-                if (!sessionStorage.file) {
+                this.fileName = sessionStorage.file
+                this.fileId = sessionStorage.id
+                if (!this.fileName) {
                     window.location.href = "./index.html"
                 }
-                axios.get('./json/' + sessionStorage.file)
+                axios.get('./json/' + this.fileName)
                     .then((response) => {
                         this.data = response.data;
                         //错题模式需要筛选题目
                         if (sessionStorage.type == "wrong") {
                             //如果没有错题
-                            if (localStorage["wrong_" + sessionStorage.id] && localStorage["wrong_" + sessionStorage.id] != "[]") {
+                            if (localStorage["wrong_" + this.fileId] && localStorage["wrong_" + this.fileId] != "[]") {
                                 this.data = this.wrongArray(this.data)
                             } else { //如果没有错题
                                 this.$Message.error('您暂时无错题记录，已自动为您选择乱序答题模式');
@@ -303,10 +331,14 @@
                             this.data = this.randomArray(this.data)
                         }
 
+                        if (sessionStorage.type == "order" || sessionStorage.type == "recite") {
+                            this.recovery(sessionStorage.type)
+                        }
+
                         //初始化题目
                         this.initTimu();
                     })
-                    .catch(function(error) {
+                    .catch(function (error) {
                         this.$Message.error('发生错误！');
                     });
             }
