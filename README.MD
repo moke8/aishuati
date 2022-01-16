@@ -7,6 +7,11 @@
 -->
 <h1>爱刷题</h1>
 <p>一个简单的无数据库的刷题H5应用</p>
+<h3>更新</h3>
+<p>爱刷题PLUS在<a href="https://github.com/moke8/aishuati/">爱刷题</a>的基础上，舍弃了部署简单、纯前端部署等优势，加入了管理后台、更加方便管理操作和题库录入、修改等。</p>
+<p>在UI界面上采用了新的设计（原本大概属于没有设计）。</p>
+<p>具体内容可以查看<a href="https://github.com/moke8/aishuati-plus-admin/">爱刷题PLUS--ADMIN</a>、<a href="https://github.com/moke8/aishuati-plus-wechat/">爱刷题PLUS--WECHAT</a>和<a href="https://github.com/moke8/aishuati-plus-api/">爱刷题PLUS--API</a>.</p>
+
 <h3>前言</h3>
 <p>迫于最近需要考试，平时碎片化时间较多，并不能合理利用碎片化时间。便想着可以用类似于<code>驾考宝典</code>的应用帮助自己充分利用碎片化时间。</p>
 <p>于是将试卷WORD整理出来，导入了一些刷题网站（如<code>刷刷题</code>、<code>考试宝</code>等），发现，都是需要收费的，可能一周就要10元。</p>
